@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import borrowerKybRoutes from './borrowerKybRoutes';
+import faucetRoutes from './faucetRoutes';
 
 const router = Router();
 
@@ -15,5 +16,8 @@ router.get('/', (req, res) => {
 
 // Borrower KYB routes
 router.use('/borrower-kyb', borrowerKybRoutes);
+
+// Faucet routes
+router.use('/faucet', faucetRoutes);
 
 export default router;
