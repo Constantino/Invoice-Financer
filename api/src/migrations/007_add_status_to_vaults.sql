@@ -1,0 +1,4 @@
+ALTER TABLE vaults 
+ADD COLUMN IF NOT EXISTS status VARCHAR(50) NOT NULL DEFAULT 'PENDING';
+
+CREATE INDEX idx_vaults_status ON vaults(status);
