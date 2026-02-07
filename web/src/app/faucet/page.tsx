@@ -92,14 +92,14 @@ export default function FaucetPage() {
 
     const explorerLink =
         submitSuccess?.explorerUrl ||
-        (submitSuccess?.txHash ? `https://sepolia.mantlescan.xyz/tx/${submitSuccess.txHash}` : null);
+        (submitSuccess?.txHash ? `https://sepolia.etherscan.io/tx/${submitSuccess.txHash}` : null);
 
     return (
         <div className="w-full p-8">
             <div className="max-w-2xl mx-auto">
                 <h1 className="text-4xl font-bold mb-4 text-foreground">USDC Faucet</h1>
                 <p className="text-lg text-muted-foreground mb-8">
-                    Request test USDC tokens for Mantle Sepolia. No wallet connection required.
+                    Request test USDC tokens for Ethereum Sepolia. No wallet connection required.
                 </p>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -180,7 +180,7 @@ export default function FaucetPage() {
                 <div className="mt-8 p-4 bg-muted/50 rounded-md border border-border">
                     <h2 className="text-sm font-semibold text-foreground mb-2">Important Notes:</h2>
                     <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
-                        <li>These are test tokens for Mantle Sepolia testnet only</li>
+                        <li>These are test tokens for Ethereum Sepolia testnet only</li>
                         <li>No gas fees required - completely gasless</li>
                         <li>Transactions are processed by our backend wallet</li>
                         <li>Use these tokens for testing the factoring platform</li>
