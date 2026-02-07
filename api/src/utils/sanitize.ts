@@ -1,4 +1,5 @@
 import { BorrowerKYBRequestBody } from '../models/borrowerKyb';
+import { LoanRequestBody } from '../models/loanRequest';
 
 /**
  * Sanitizes a string by trimming, normalizing whitespace, and removing control characters
@@ -57,6 +58,53 @@ export const sanitizeWalletAddress = (value: string): string => {
 };
 
 /**
+ * Sanitizes a date string (YYYY-MM-DD format)
+ */
+export const sanitizeDate = (value: unknown): string => {
+    if (typeof value !== 'string') {
+        return '';
+    }
+    // Trim and validate basic format
+    const sanitized = value.trim();
+    // Basic format check - full validation happens in validators
+    if (/^\d{4}-\d{2}-\d{2}$/.test(sanitized)) {
+        return sanitized;
+    }
+    return sanitized;
+};
+
+/**
+ * Sanitizes an integer number
+ */
+export const sanitizeInteger = (value: unknown): number => {
+    if (typeof value === 'number') {
+        return Math.floor(value);
+    }
+    if (typeof value === 'string') {
+        const parsed = parseInt(value, 10);
+        return isNaN(parsed) ? 0 : parsed;
+    }
+    return 0;
+};
+
+/**
+ * Sanitizes a boolean value
+ */
+export const sanitizeBoolean = (value: unknown): boolean => {
+    if (typeof value === 'boolean') {
+        return value;
+    }
+    if (typeof value === 'string') {
+        const lower = value.toLowerCase().trim();
+        return lower === 'true' || lower === '1' || lower === 'yes';
+    }
+    if (typeof value === 'number') {
+        return value !== 0;
+    }
+    return false;
+};
+
+/**
  * Sanitizes the entire BorrowerKYB request body
  */
 export const sanitizeBorrowerKYBRequest = (data: BorrowerKYBRequestBody): BorrowerKYBRequestBody => {
@@ -68,5 +116,25 @@ export const sanitizeBorrowerKYBRequest = (data: BorrowerKYBRequestBody): Borrow
         UBO_full_name: sanitizeString(data.UBO_full_name, 255),
         average_invoice_amount: sanitizeNumber(data.average_invoice_amount),
         wallet_address: sanitizeWalletAddress(data.wallet_address),
+    };
+};
+
+/**
+ * Sanitizes the entire LoanRequest request body
+ */
+export const sanitizeLoanRequestRequest = (data: LoanRequestBody): LoanRequestBody => {
+    return {
+        invoice_number: sanitizeString(data.invoice_number, 255),
+        invoice_amount: sanitizeNumber(data.invoice_amount),
+        invoice_due_date: sanitizeDate(data.invoice_due_date),
+        term: sanitizeInteger(data.term),
+        customer_name: sanitizeString(data.customer_name, 255),
+        delivery_completed: sanitizeBoolean(data.delivery_completed),
+        advance_rate: sanitizeNumber(data.advance_rate),
+        monthly_interest_rate: sanitizeNumber(data.monthly_interest_rate),
+        max_loan: sanitizeNumber(data.max_loan),
+        not_pledged: sanitizeBoolean(data.not_pledged),
+        assignment_signed: sanitizeBoolean(data.assignment_signed),
+        borrower_address: sanitizeWalletAddress(data.borrower_address),
     };
 };
