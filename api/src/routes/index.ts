@@ -3,6 +3,7 @@ import borrowerKybRoutes from './borrowerKybRoutes';
 import faucetRoutes from './faucetRoutes';
 import loanRequestRoutes from './loanRequestRoutes';
 import vaultsRoutes from './vaultsRoutes';
+import nftRoutes from './nftRoutes';
 
 const router = Router();
 
@@ -27,5 +28,8 @@ router.use('/loan-requests', loanRequestRoutes);
 
 // Vault routes
 router.use('/vaults', vaultsRoutes);
+
+// NFT routes
+router.use('/nft', nftRoutes);
 
 export default router;
