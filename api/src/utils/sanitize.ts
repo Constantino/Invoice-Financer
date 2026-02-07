@@ -1,5 +1,6 @@
 import { BorrowerKYBRequestBody } from '../models/borrowerKyb';
 import { LoanRequestBody } from '../models/loanRequest';
+import { GenerateInvoiceMetadataBody, MintInvoiceNFTBody } from '../types/nft';
 
 /**
  * Sanitizes a string by trimming, normalizing whitespace, and removing control characters
@@ -116,6 +117,39 @@ export const sanitizeBorrowerKYBRequest = (data: BorrowerKYBRequestBody): Borrow
         UBO_full_name: sanitizeString(data.UBO_full_name, 255),
         average_invoice_amount: sanitizeNumber(data.average_invoice_amount),
         wallet_address: sanitizeWalletAddress(data.wallet_address),
+    };
+};
+
+/**
+ * Sanitizes a string for use in filenames (removes special characters, spaces, etc.)
+ */
+export const sanitizeForFilename = (value: string): string => {
+    if (typeof value !== 'string') {
+        return 'unknown';
+    }
+    return value.replace(/[^a-zA-Z0-9-_]/g, '_').toLowerCase();
+};
+
+/**
+ * Sanitizes the entire GenerateInvoiceMetadata request body
+ */
+export const sanitizeGenerateInvoiceMetadataRequest = (data: GenerateInvoiceMetadataBody): GenerateInvoiceMetadataBody => {
+    return {
+        name: sanitizeString(data.name, 255),
+        description: sanitizeString(data.description, 2000),
+        borrowerName: sanitizeString(data.borrowerName, 255),
+        loanRequestId: sanitizeInteger(data.loanRequestId),
+        invoiceNumber: sanitizeString(data.invoiceNumber, 255),
+    };
+};
+
+/**
+ * Sanitizes the entire MintInvoiceNFT request body
+ */
+export const sanitizeMintInvoiceNFTRequest = (data: MintInvoiceNFTBody): MintInvoiceNFTBody => {
+    return {
+        ...sanitizeGenerateInvoiceMetadataRequest(data),
+        toAddress: sanitizeWalletAddress(data.toAddress),
     };
 };
 
