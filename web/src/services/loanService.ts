@@ -1,7 +1,12 @@
 import axios from "axios";
 import { ethers } from "ethers";
 import { getApiUrl } from "@/lib/api";
-import type { LoanRequestWithVault, LoanRequestDetail, LoanStats } from "@/types/loans";
+import type {
+    LoanRequest,
+    LoanRequestWithVault,
+    LoanRequestDetail,
+    LoanStats,
+} from "@/types/loans";
 import { LoanRequestStatus } from "@/types/loans/loanRequestStatus";
 import { VAULT_ABI } from "@/app/abi/Vault";
 import { ERC20_ABI } from "@/app/abi/ERC20";
@@ -18,6 +23,20 @@ export async function countRequestedLoanRequests(): Promise<number> {
         `${apiUrl}/loan-requests?status=${LoanRequestStatus.REQUESTED}`
     );
     return response.data.count ?? 0;
+}
+
+/**
+ * Fetches all loan requests filtered by status
+ */
+export async function getAllLoanRequestsByStatus(
+    status: LoanRequestStatus | string
+): Promise<LoanRequest[]> {
+    if (!status) throw new Error("Status is required");
+    const apiUrl = getApiUrl();
+    const response = await axios.get<{ data: LoanRequest[]; count: number }>(
+        `${apiUrl}/loan-requests?status=${status}`
+    );
+    return response.data.data ?? [];
 }
 
 export async function getLoanRequestsByBorrowerWithVaults(
