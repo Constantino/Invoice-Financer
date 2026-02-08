@@ -1,13 +1,19 @@
 import { Pool } from 'pg';
 
-// Create a connection pool
-export const pool = new Pool({
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432', 10),
-    database: process.env.DB_NAME || 'invoice_financer',
-    user: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASSWORD || '',
-});
+const connectionString = process.env.DATABASE_CONNECTION_STRING;
+
+// Create a connection pool: use Supabase/connection string when set, else DB_* vars
+export const pool = new Pool(
+    connectionString
+        ? { connectionString }
+        : {
+              host: process.env.DB_HOST || 'localhost',
+              port: parseInt(process.env.DB_PORT || '5432', 10),
+              database: process.env.DB_NAME || 'invoice_financer',
+              user: process.env.DB_USER || 'postgres',
+              password: process.env.DB_PASSWORD || '',
+          }
+);
 
 // Test database connection
 export const testConnection = async (): Promise<void> => {

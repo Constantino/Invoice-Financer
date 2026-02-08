@@ -571,7 +571,21 @@ export const getAllLoanRequests = async (req: Request, res: Response): Promise<v
             data: result.rows,
             count: result.rows.length
         });
-    } catch (error) {
+    } catch (error: unknown) {
+        const isDbDown =
+            (error as NodeJS.ErrnoException)?.code === 'ECONNREFUSED' ||
+            (error instanceof AggregateError &&
+                (error as AggregateError).errors?.some(
+                    (e: unknown) => (e as NodeJS.ErrnoException)?.code === 'ECONNREFUSED'
+                ));
+        if (isDbDown) {
+            console.warn('Database unavailable (ECONNREFUSED). Is PostgreSQL running?');
+            res.status(503).json({
+                error: 'Service temporarily unavailable',
+                details: 'Database connection refused. Ensure PostgreSQL is running.'
+            });
+            return;
+        }
         console.error('Error retrieving loan requests:', error);
         res.status(500).json({
             error: 'Failed to retrieve loan requests',

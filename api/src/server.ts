@@ -25,10 +25,10 @@ app.use(errorHandler);
 const startServer = async (): Promise<void> => {
     try {
         // Test database connection before starting server (optional)
-        if (process.env.DB_HOST) {
+        if (process.env.DATABASE_CONNECTION_STRING || process.env.DB_HOST) {
             await testConnection();
         } else {
-            console.log('Database connection skipped (DB_HOST not set)');
+            console.log('Database connection skipped (no DATABASE_CONNECTION_STRING or DB_HOST)');
         }
 
         app.listen(PORT, '0.0.0.0', () => {
