@@ -18,6 +18,7 @@ import {
     calculateTotalInterest,
     calculateTotalCapital,
 } from "@/services/loanService";
+import { getApiErrorMessage } from "@/lib/api";
 import { formatCurrency } from "@/lib/format";
 
 export default function LoanDashboardPage() {
@@ -50,17 +51,7 @@ export default function LoanDashboardPage() {
             const data = await getLoanRequestsByBorrowerWithVaults(walletAddress);
             setLoanRequests(data);
         } catch (err) {
-            console.error("Error fetching loan requests:", err);
-            if (axios.isAxiosError(err)) {
-                setError(
-                    err.response?.data?.error ||
-                        err.response?.data?.message ||
-                        err.message ||
-                        "Failed to fetch loan requests"
-                );
-            } else {
-                setError(err instanceof Error ? err.message : "An unexpected error occurred");
-            }
+            setError(getApiErrorMessage(err, "Failed to fetch loan requests"));
         } finally {
             setIsLoading(false);
         }
@@ -72,8 +63,8 @@ export default function LoanDashboardPage() {
             setIsLoadingStats(true);
             const stats = await getBorrowerStats(walletAddress);
             setLoanStats(stats);
-        } catch (err) {
-            console.error("Error fetching borrower stats:", err);
+        } catch {
+            // Ignore; stats are optional
         } finally {
             setIsLoadingStats(false);
         }

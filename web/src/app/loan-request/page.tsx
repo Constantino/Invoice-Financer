@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useWalletAddress } from "@/hooks/use-wallet-address";
-import { getApiUrl } from "@/lib/api";
+import { getApiUrl, getApiErrorMessage } from "@/lib/api";
 
 export default function LoanRequestPage() {
     const router = useRouter();
@@ -171,24 +171,14 @@ export default function LoanRequestPage() {
             });
             setConfirmations({ notPledged: false, authorizeAssignment: false });
         } catch (error) {
-            console.error("Error submitting loan request:", error);
-            if (axios.isAxiosError(error)) {
-                if (error.response?.status === 403 && error.response?.data?.requiresKYB) {
-                    setSubmitError(
-                        error.response.data.message ||
-                            "You must complete KYB verification before creating a loan request"
-                    );
-                    setTimeout(() => router.push("/borrower-kyb"), 2000);
-                } else {
-                    setSubmitError(
-                        error.response?.data?.error ||
-                            error.response?.data?.message ||
-                            error.message ||
-                            "Failed to submit loan request"
-                    );
-                }
+            if (axios.isAxiosError(error) && error.response?.status === 403 && error.response?.data?.requiresKYB) {
+                setSubmitError(
+                    error.response.data.message ||
+                        "You must complete KYB verification before creating a loan request"
+                );
+                setTimeout(() => router.push("/borrower-kyb"), 2000);
             } else {
-                setSubmitError("An unexpected error occurred");
+                setSubmitError(getApiErrorMessage(error, "Failed to submit loan request"));
             }
         } finally {
             setIsSubmitting(false);

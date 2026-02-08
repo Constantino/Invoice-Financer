@@ -16,6 +16,7 @@ import {
     calculateRealizedGains,
     calculateUnrealizedGains,
 } from "@/services/vault";
+import { getApiErrorMessage } from "@/lib/api";
 import { formatCurrency } from "@/lib/format";
 
 export default function LenderLoansPage() {
@@ -60,19 +61,7 @@ export default function LenderLoansPage() {
             const data = await fetchLenderPortfolio(walletAddress);
             setPortfolio(data);
         } catch (err) {
-            console.error("Error fetching portfolio:", err);
-            if (axios.isAxiosError(err)) {
-                setError(
-                    err.response?.data?.error ||
-                        err.response?.data?.message ||
-                        err.message ||
-                        "Failed to fetch portfolio"
-                );
-            } else {
-                setError(
-                    err instanceof Error ? err.message : "An unexpected error occurred"
-                );
-            }
+            setError(getApiErrorMessage(err, "Failed to fetch portfolio"));
         } finally {
             setIsLoading(false);
         }

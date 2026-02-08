@@ -5,7 +5,7 @@ import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
-import { getApiUrl } from "@/lib/api";
+import { getApiUrl, getApiErrorMessage } from "@/lib/api";
 import { useWalletAddress } from "@/hooks/use-wallet-address";
 import {
     validateMintRequest,
@@ -74,17 +74,7 @@ export default function FaucetPage() {
             setWalletAddress("");
             setAmount("");
         } catch (error) {
-            console.error("Error requesting tokens:", error);
-            if (axios.isAxiosError(error)) {
-                setSubmitError(
-                    error.response?.data?.error ||
-                        error.response?.data?.message ||
-                        error.message ||
-                        "Failed to request tokens"
-                );
-            } else {
-                setSubmitError("An unexpected error occurred");
-            }
+            setSubmitError(getApiErrorMessage(error, "Failed to request tokens"));
         } finally {
             setIsSubmitting(false);
         }

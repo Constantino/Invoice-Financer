@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useWalletAddress } from "@/hooks/use-wallet-address";
-import { getApiUrl } from "@/lib/api";
+import { getApiUrl, getApiErrorMessage } from "@/lib/api";
 
 export default function BorrowerKYBPage() {
     const router = useRouter();
@@ -37,8 +37,8 @@ export default function BorrowerKYBPage() {
                 if (response.data.hasKYB) {
                     router.push("/loan-request");
                 }
-            } catch (error) {
-                console.error("Error checking existing KYB:", error);
+            } catch {
+                // Network or API error — stay on page so user can submit or retry
             } finally {
                 setIsCheckingKYB(false);
             }
@@ -83,17 +83,7 @@ export default function BorrowerKYBPage() {
                 router.push("/loan-request");
             }, 1500);
         } catch (error) {
-            console.error("Error submitting KYB:", error);
-            if (axios.isAxiosError(error)) {
-                setSubmitError(
-                    error.response?.data?.error ||
-                        error.response?.data?.message ||
-                        error.message ||
-                        "Failed to submit KYB information"
-                );
-            } else {
-                setSubmitError("An unexpected error occurred");
-            }
+            setSubmitError(getApiErrorMessage(error, "Failed to submit KYB information"));
         } finally {
             setIsSubmitting(false);
         }

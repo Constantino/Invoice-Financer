@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ParticipateModal } from "@/components/participate-modal";
+import { getApiErrorMessage } from "@/lib/api";
 import { fetchVaults, participateInVault } from "@/services/vault";
 import type { Vault } from "@/types/vault";
 
@@ -36,17 +37,7 @@ export default function VaultsPage() {
             const data = await fetchVaults();
             setVaults(data);
         } catch (err) {
-            console.error("Error fetching vaults:", err);
-            if (axios.isAxiosError(err)) {
-                setError(
-                    err.response?.data?.error ||
-                        err.response?.data?.message ||
-                        err.message ||
-                        "Failed to fetch vaults"
-                );
-            } else {
-                setError("An unexpected error occurred");
-            }
+            setError(getApiErrorMessage(err, "Failed to fetch vaults"));
         } finally {
             setIsLoading(false);
         }

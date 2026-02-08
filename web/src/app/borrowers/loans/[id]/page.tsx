@@ -10,7 +10,7 @@ import { LoanRequestStatus } from "@/types/loans/loanRequestStatus";
 import { getLoanRequestDetail, changeLoanRequestStatus } from "@/services/loanService";
 import { useRoleStore } from "@/stores/roleStore";
 import { ApproveModal } from "@/components/approve-modal";
-import { getApiUrl } from "@/lib/api";
+import { getApiUrl, getApiErrorMessage } from "@/lib/api";
 import { CountBadge } from "@/components/count-badge";
 
 const EXPLORER_URL = "https://sepolia.etherscan.io";
@@ -68,17 +68,7 @@ export default function LoanRequestDetailPage() {
             const data = await getLoanRequestDetail(parseInt(loanId, 10));
             setLoanDetail(data);
         } catch (err) {
-            console.error("Error fetching loan details:", err);
-            if (axios.isAxiosError(err)) {
-                setError(
-                    err.response?.data?.error ||
-                        err.response?.data?.message ||
-                        err.message ||
-                        "Failed to fetch loan details"
-                );
-            } else {
-                setError(err instanceof Error ? err.message : "An unexpected error occurred");
-            }
+            setError(getApiErrorMessage(err, "Failed to fetch loan details"));
         } finally {
             setIsLoading(false);
         }

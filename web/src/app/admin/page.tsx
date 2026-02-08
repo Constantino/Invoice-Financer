@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoansTable } from "@/components/loans-table";
 import { LoanStatsPieChart } from "@/components/loan-stats-pie-chart";
@@ -10,6 +9,7 @@ import { PlatformPerformanceAreaChart } from "@/components/platform-performance-
 import type { LoanRequest, LoanRequestWithVault, LoanStats } from "@/types/loans";
 import { LoanRequestStatus } from "@/types/loans/loanRequestStatus";
 import { getAllLoanRequestsByStatus } from "@/services/loanService";
+import { getApiErrorMessage } from "@/lib/api";
 import { useRequestedCountStore } from "@/stores/requestedCountStore";
 
 const loanStats: LoanStats = {
@@ -107,21 +107,7 @@ export default function AdminPage() {
             );
             setLoanRequests(mappedData);
         } catch (err) {
-            console.error("Error fetching loan requests:", err);
-            if (axios.isAxiosError(err)) {
-                setError(
-                    err.response?.data?.error ||
-                        err.response?.data?.message ||
-                        err.message ||
-                        "Failed to fetch loan requests"
-                );
-            } else {
-                setError(
-                    err instanceof Error
-                        ? err.message
-                        : "An unexpected error occurred"
-                );
-            }
+            setError(getApiErrorMessage(err, "Failed to fetch loan requests"));
         } finally {
             setIsLoading(false);
         }
