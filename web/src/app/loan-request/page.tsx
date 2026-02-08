@@ -208,14 +208,18 @@ export default function LoanRequestPage() {
     }
 
     return (
-        <div className="w-full p-8">
+        <div className="w-full p-8" suppressHydrationWarning>
             <div className="max-w-3xl mx-auto">
                 <h1 className="text-4xl font-bold mb-4 text-foreground">Loan Request</h1>
                 <p className="text-lg text-muted-foreground mb-8">
                     Submit a new loan request for invoice factoring
                 </p>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form
+                    onSubmit={handleSubmit}
+                    className="space-y-6"
+                    suppressHydrationWarning
+                >
                     <div className="space-y-2">
                         <label htmlFor="invoiceNumber" className="text-sm font-medium text-foreground">
                             Invoice Number
