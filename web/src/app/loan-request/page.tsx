@@ -31,8 +31,8 @@ export default function LoanRequestPage() {
                 } else {
                     setKybCheckComplete(true);
                 }
-            } catch (error) {
-                console.error("Error checking KYB:", error);
+            } catch {
+                // API unreachable — show form anyway; backend will enforce KYB on submit
                 setKybCheckComplete(false);
             } finally {
                 setIsCheckingKYB(false);
