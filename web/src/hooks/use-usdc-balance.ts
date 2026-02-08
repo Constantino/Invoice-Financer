@@ -54,13 +54,9 @@ export function useUSDCBalance() {
                 const balanceUsdc = Number(balanceWei) / 1e6;
                 setBalance(balanceUsdc.toFixed(2));
             } catch (err) {
-                console.error("Error fetching USDC balance:", err);
-                setError(
-                    err instanceof Error
-                        ? err.message
-                        : "Failed to fetch USDC balance"
-                );
+                // BAD_DATA / "0x" = no contract at address (wrong network or invalid USDC address)
                 setBalance("0.00");
+                setError(null); // Don't surface to UI; navbar shows 0.00
             } finally {
                 setIsLoading(false);
             }

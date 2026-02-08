@@ -45,8 +45,9 @@ export function AppSidebar() {
             try {
                 const count = await countRequestedLoanRequests();
                 setRequestedCount(count);
-            } catch (error) {
-                console.error("Error fetching requested loan count:", error);
+            } catch {
+                // API unreachable (e.g. not running, network error, CORS) — show no badge
+                setRequestedCount(0);
             }
         }
 
